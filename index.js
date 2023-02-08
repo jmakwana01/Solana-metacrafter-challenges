@@ -9,6 +9,14 @@ const {
 
 // Create a new keypair
 const newPair = new Keypair();
+const args = process.argv.slice(2);
+const accountAddress = args[0];
+
+if (!accountAddress) {
+  console.error("Please provide an account address as an argument.");
+  process.exit(1);
+}
+
 
 // Exact the public and private key from the keypair
 const publicKey = new PublicKey(newPair._keypair.publicKey).toString();
@@ -45,10 +53,11 @@ const airDropSol = async () => {
 
         // Request airdrop of 2 SOL to the wallet
         console.log("Airdropping some SOL to my wallet!");
-        const fromAirDropSignature = await connection.requestAirdrop(
-            new PublicKey(myWallet.publicKey),
-            2 * LAMPORTS_PER_SOL
-        );
+        
+const fromAirDropSignature = await connection.requestAirdrop(
+    new PublicKey(accountAddress),
+    2 * LAMPORTS_PER_SOL
+);
         await connection.confirmTransaction(fromAirDropSignature);
     } catch (err) {
         console.log(err);
