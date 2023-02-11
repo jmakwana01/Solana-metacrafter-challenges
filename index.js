@@ -20,14 +20,30 @@ console.log(newPair);
 const DEMO_FROM_SECRET_KEY = new Uint8Array(
   // paste your secret key array here
     [
-        160,  20, 189, 212, 129, 188, 171, 124,  20, 179,  80,
-         27, 166,  17, 179, 198, 234,  36, 113,  87,   0,  46,
-        186, 250, 152, 137, 244,  15,  86, 127,  77,  97, 170,
-         44,  57, 126, 115, 253,  11,  60,  90,  36, 135, 177,
-        185, 231,  46, 155,  62, 164, 128, 225, 101,  79,  69,
-        101, 154,  24,  58, 214, 219, 238, 149,  86
+        195, 211,  29, 15,  33, 135, 187, 122, 156, 151,  37,
+       47,  18, 143, 10,  14, 169, 168, 200, 119, 148, 126,
+       54,  32,  21, 94, 222, 241, 133,  34, 143, 162,  74,
+       74,  25, 217, 81,   3, 107, 169, 124,  66, 133, 113,
+      228, 195, 244, 62, 229, 174, 253,  25, 225, 114,  28,
+      228, 252,  27, 57,  13,  43, 157,   7,  51
       ]            
 );
+const getWalletBalance = async () => {
+    try {
+        // Connect to the Devnet
+        const connection = new Connection(clusterApiUrl("devnet"), "confirmed");
+        console.log("Connection object is:", connection);
+
+        // Make a wallet (keypair) from privateKey and get its balance
+        const myWallet = await Keypair.fromSecretKey(privateKey);
+        const walletBalance = await connection.getBalance(
+            new PublicKey(newPair.publicKey)
+        );
+        console.log(`Wallet balance: ${parseInt(walletBalance) / LAMPORTS_PER_SOL} SOL`);
+    } catch (err) {
+        console.log(err);
+    }
+};
 
 const transferSol = async() => {
     const connection = new Connection(clusterApiUrl("devnet"), "confirmed");
@@ -80,6 +96,15 @@ const transferSol = async() => {
         [from]
     );
     console.log('Signature is', signature);
+    const walletBalanceSender = await connection.getBalance(
+        new PublicKey(from.publicKey)
+    );
+    console.log(`Wallet balance Sender: ${parseInt(walletBalanceSender) / LAMPORTS_PER_SOL} SOL`);
+
+    const walletBalanceReciever = await connection.getBalance(
+        new PublicKey(to.publicKey)
+    );
+    console.log(`Wallet balance Reciever: ${parseInt(walletBalanceReciever) / LAMPORTS_PER_SOL} SOL`);
 }
 
 transferSol();
