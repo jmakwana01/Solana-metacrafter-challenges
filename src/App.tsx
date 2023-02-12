@@ -93,6 +93,16 @@ export default function App() {
     }
   };
 
+  const disconnectWallet = async ()=>{
+    
+    try{
+      await provider!.disconnect();
+      setWalletKey(undefined);
+    }catch(err){
+      console.log(err)
+    }
+  };
+
 	// HTML code for the app
   return (
     <div className="App">
@@ -111,7 +121,24 @@ export default function App() {
         Connect Wallet
       </button>
         )}
+      
         {provider && walletKey && <p>Connected account</p> }
+        
+
+        {provider && walletKey &&(
+
+          <button style = {{
+
+            fontSize:"15px",
+            padding: "15px",
+            fontWeight: "bold",
+            borderRadius: "5px",
+          }}
+          onClick ={disconnectWallet}
+          >
+            Disconnect Wallet
+          </button>
+        )}
 
         {!provider && (
           <p>
